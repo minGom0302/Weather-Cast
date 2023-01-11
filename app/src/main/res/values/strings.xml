@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Weather Cast</string>
+    <string name="app_title">오늘의 날씨</string>
+    <string name="app_creator">made by 배.상.민</string>
 </resources>
