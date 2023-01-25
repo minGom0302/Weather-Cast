@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.location.Address;
 import android.os.Bundle;
@@ -59,6 +60,7 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
     SimpleDateFormat setFormatDate = new SimpleDateFormat("yyyy.MM.dd");
     SimpleDateFormat formatTimer = new SimpleDateFormat("HH00");
     SimpleDateFormat setFormatTimer = new SimpleDateFormat("HH:mm");
+    ProgressDialog progressDialog;
 
     SwipeRefreshLayout swipeRefreshLayout;
     LinearLayout infoLayout;
@@ -87,6 +89,8 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        progressDialog = ProgressDialog.show(Activity_Main.this, "조회 중 ...", "Please Wait...", true, false);
+
         swipeRefreshLayout = findViewById(R.id.mainSwipeLayout);
         infoLayout = findViewById(R.id.main_infoLayout);
         timeWeatherRv = findViewById(R.id.main_timeWeatherRv);
@@ -106,6 +110,7 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
         swipeRefreshLayout.setOnRefreshListener(this);
 
         searchBtn.setOnClickListener(v -> {
+            progressDialog.show();
             hideKeyboard();
             weatherSearch();
         });
@@ -134,10 +139,8 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
             GpsTransfer.LatXLngY  latXLngY = gpsTransfer.transfer(0, address.getLatitude(), address.getLongitude());
             x = String.valueOf((int) latXLngY.x);
             y = String.valueOf((int) latXLngY.y);
-            Log.i(TAG, "x : " + x + " / y : " + y);
             getDayAndTime();
         } else {
-            Log.i(TAG, "return 값 없음");
             Toast.makeText(this, "해당되는 주소 정보를 찾지 못했습니다.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -147,7 +150,6 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
         // 기상정보를 받기 위한 날짜와 요청 시간 (현재 시간에서 -1시간)
         long now = System.currentTimeMillis();
         Date date = new Date(now);
-        Log.i(TAG, String.valueOf(date));
         // API 요청 날짜 형식 > 20220101
         baseDate = formatDate.format(date);
         baseDate2 = baseDate;
@@ -185,7 +187,6 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
         } else {
             baseTime = "2300";
         }
-        Log.i(TAG, "현재 날짜 : " + baseDate2 + " / 요청한 시간대 : " + baseTime);
 
         getData();
     }
@@ -205,7 +206,7 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
             @Override
             public void onResponse(@NonNull Call<Weather> call, @NonNull Response<Weather> response) {
                 if(response.isSuccessful()) {
-                    Log.i(TAG, "response is successful");
+                    //Log.i(TAG, "response is successful");
                     if(response.body() != null) {
                         Weather list = response.body();
                         String resultCode = list.getResponse().getHeader().getResultCode();
@@ -215,15 +216,19 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
                         } else if(resultCode.equals("03")) {
                             Log.i(TAG, list.getResponse().getHeader().getResultMsg());
                             Toast.makeText(Activity_Main.this, list.getResponse().getHeader().getResultMsg(), Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
                         }
                     }
                 } else {
                     Log.i(TAG, "response is unsuccessful");
+                    progressDialog.dismiss();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Weather> call, @NonNull Throwable t) {
+                Toast.makeText(Activity_Main.this, "다시 조회하시기 바랍니다.", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
                 Log.i(TAG, "response is failure");
                 Log.i(TAG, "error : " + t.getMessage());
             }
@@ -257,16 +262,12 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
                 if(item.getFcstTime().equals(time)) {
                     if ("TMP".equals(item.getCategory())) {
                         TempValue = item.getFcstValue();
-                        Log.i(TAG, TempValue);
                     } else if ("WSD".equals(item.getCategory())) {
                         windValue = item.getFcstValue();
-                        Log.i(TAG, windValue);
                     } else if ("SKY".equals(item.getCategory())) {
                         SKYValue = item.getFcstValue();
-                        Log.i(TAG, SKYValue);
                     } else if ("PTY".equals(item.getCategory())) {
                         PTYValue = item.getFcstValue();
-                        Log.i(TAG, PTYValue);
                     } else if ("REH".equals(item.getCategory())) {
                         REHValue = item.getFcstValue();
                         break;
@@ -354,13 +355,10 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
                         day = String.valueOf(sb);
                         time = item.getFcstTime().substring(0, 2);
 
-                        // Log.i(TAG, "item.getFcstTime() : " + item.getFcstTime() + " / nowTime : " + nowTime);
-
                         // 리스트에 추가하는 조건
                         // 1. 현재 시간보다 클 경우
                         // 2. 날짜가 다를 경우
                         if (Integer.parseInt(item.getFcstTime()) > Integer.parseInt(nowTime) || !item.getFcstDate().equals(baseDate)) {
-                            // Log.i(TAG, "day : " + day + " / time : " + time + " / temp : " + temp + " / sky : " + sky + " / pty : " + pty + " / pop : " + pop + " / pcp : " + pcp + " / sno : " + sno);
                             Weather_Time wt = new Weather_Time(day, time, temp, sky, pty, pop, pcp, sno);
                             weatherList.add(wt);
 
@@ -414,7 +412,6 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
                         int year = Integer.parseInt(item.getFcstDate().substring(0, 4));
                         int month = Integer.parseInt(item.getFcstDate().substring(4, 6));
                         int d = Integer.parseInt(item.getFcstDate().substring(6));
-                        Log.i(TAG, "year month day : " + year + "/" + month + "/" + d + "count : " + i);
 
                         // 해당 날짜의 요일을 구하기 위해 작성
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -422,7 +419,6 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
                             DayOfWeek dayOfWeek = ld.getDayOfWeek();
                             day_day = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN);
                         }
-                        Log.i(TAG, "day : " + day_day + " / minTemp : " + minTemp + " / maxTemp : " + maxTemp + " / minSky : " + minSky + " / maxSky : " + maxSky + " / minPty : " + minPty + " / maxPty : " + maxPty);
 
                         Weather_Day wd = new Weather_Day(day_day, minTemp, maxTemp, minSky, maxSky, minPty, maxPty);
 
@@ -444,6 +440,8 @@ public class Activity_Main extends AppCompatActivity implements SwipeRefreshLayo
         DayWeather dayWeather = new DayWeather(dayDTO);
         dayWeatherRv.setLayoutManager(new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false));
         dayWeatherRv.setAdapter(dayWeather);
+
+        progressDialog.dismiss();
     }
 
     @Override
