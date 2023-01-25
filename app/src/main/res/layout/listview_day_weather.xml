@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="5dp"
+    android:layout_marginHorizontal="20dp">
+
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/listview_day_dateTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="날짜 (요일)"
+        android:textSize="16sp"
+        android:textColor="#000000" />
+    
+    <ImageView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/listview_day_dateTv"
+        app:layout_constraintRight_toLeftOf="@id/listview_day_imgPM"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/listview_day_imgAM"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="110dp"
+        android:src="@drawable/icon_snow"/>
+
+    <ImageView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/listview_day_imgAM"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/listview_day_imgPM"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/icon_snow"/>
+
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/listview_day_imgPM"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/listview_day_tempAM"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:textSize="16sp"
+        android:textColor="#000000"/>
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/listview_day_tempAM"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/listview_day_temp01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:text="@string/Temperature"
+        android:textSize="16sp"
+        android:textColor="#000000"/>
+
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/listview_day_temp02"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/listview_day_tempPM"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#000000"/>
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/listview_day_temp02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:text="@string/Temperature"
+        android:textSize="16sp"
+        android:textColor="#000000"/>
+    
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,4 +2,16 @@
     <string name="app_name">Weather Cast</string>
     <string name="app_title">오늘의 날씨</string>
     <string name="app_creator">made by 배.상.민</string>
+    <string name="addrEt">지역 혹은 주소를 입력해주세요.</string>
+    <string name="search">조회</string>
+    <string name="nowTemperature">온도</string>
+    <string name="nowWind">풍속</string>
+    <string name="Temperature">ºC</string>
+    <string name="speed">m/s</string>
+    <string name="humidity">습도</string>
+    <string name="percent">%</string>
+    <string name="time">시</string>
+    <string name="millimeter">mm</string>
+    <string name="weatherByTime">시간별 날씨</string>
+    <string name="weatherByDate">날짜별 날씨</string>
 </resources>
